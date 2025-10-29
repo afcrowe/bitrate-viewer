@@ -52,3 +52,46 @@ def plot_results(results, graph_title, graph_filename):
 
     # save the plot
     plt.savefig(f'{graph_filename}.png')
+    plt.close()
+
+
+def plot_comparison(results_list, labels, graph_title, graph_filename):
+    """
+    Plot multiple bitrate series on a single graph for comparison.
+
+    results_list: list of tuples like (seconds, bitrates, keyframes, encoder)
+    labels: list of strings to identify each series (e.g., filenames)
+    graph_title: title of the graph
+    graph_filename: output filename without extension
+    """
+    if not results_list:
+        raise ValueError('No results provided to plot_comparison')
+
+    # init the plot
+    plt.figure(figsize=(19.20, 10.80))
+    plt.suptitle(graph_title)
+    plt.xlabel('Seconds')
+    plt.ylabel('Video Bitrate (Mbps)')
+    plt.grid(True)
+
+    # plot each series with its own label
+    handles = []
+    handle_labels = []
+    for idx, results in enumerate(results_list):
+        seconds, bitrates, keyframes, encoder = results
+        avg_bitrate = get_mbit_str(round(np.mean(bitrates), 2))
+        encoder_pretty = get_pretty_codec_name(encoder)
+
+        series_label = labels[idx] if idx < len(labels) else f'Series {idx+1}'
+        label_text = f'{series_label} ({encoder_pretty}, Avg: {avg_bitrate})'
+
+        line, = plt.plot(seconds, bitrates, label=label_text)
+        handles.append(line)
+        handle_labels.append(label_text)
+
+    # For comparisons, skip plotting I-Frame markers to avoid clutter
+    plt.legend(handles=handles, labels=handle_labels, loc='lower right')
+
+    # save the plot
+    plt.savefig(f'{graph_filename}.png')
+    plt.close()

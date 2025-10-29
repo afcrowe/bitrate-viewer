@@ -30,7 +30,10 @@ def get_mbit_str(megabits):
 def get_pretty_codec_name(codec):
     dict = {
                 'h264': 'H.264 (AVC)',
-                'hevc': 'H.265 (HEVC)'
+                'hevc': 'H.265 (HEVC)',
+                'vp9': 'VP9',
+                'vp8': 'VP8',
+                'av1': 'AV1'
             }
 
     return dict.get(codec, codec)
